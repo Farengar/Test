@@ -5,10 +5,10 @@ from wpilib import RobotDrive
 class TestProgram(wpilib.SampleRobot):
 
     # Wheel channels
-    kFrontLeftChannel = 4
-    kRearLeftChannel = 3
-    kFrontRightChannel = 8
-    kRearRightChannel = 4
+    kFrontLeftChannel = 0
+    kRearLeftChannel = 1
+    kFrontRightChannel = 2
+    kRearRightChannel = 3
 
     # Joystick channel
     joystickChannel = 0
@@ -27,7 +27,7 @@ class TestProgram(wpilib.SampleRobot):
         self.robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, True)
 
         # possibly needs changed
-        self.robotDrive.setInvertedMotor(RobotDrive.MotoorType.kRearLeft, True)
+        self.robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, True)
 
         self.stick = wpilib.Joystick(self.joystickChannel)
 
@@ -37,7 +37,7 @@ class TestProgram(wpilib.SampleRobot):
         self.robotDrive.setSafetyEnabled(True)
         while self.isOperatorControl() and self.isEnabled():
 
-            self.robotDrive.meanumDrive_Cartesian(self.stick.getX(),
+            self.robotDrive.mecanumDrive_Cartesian(self.stick.getX(),
                                                   self.stick.getY(),
                                                   self.stick.getZ(), 0);
             wpilib.Timer.delay(0.005) # wait 5ms to avoid hogging CPU cycles
