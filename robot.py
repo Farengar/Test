@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import wpilib
 from wpilib import RobotDrive
+from wpilib.command import Scheduler
+import oi
+from subsystems.winch import Winch
 
 class TestProgram(wpilib.SampleRobot):
 
@@ -9,10 +12,6 @@ class TestProgram(wpilib.SampleRobot):
     kRearLeftChannel = 1
     kFrontRightChannel = 2
     kRearRightChannel = 3
-
-    # Joystick channel
-    joystickChannel = 0
-    
 
     def robotInit(self):
         '''Robot initialization function'''
@@ -27,9 +26,8 @@ class TestProgram(wpilib.SampleRobot):
         # invert left side motors
         self.robotDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, True)
         self.robotDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, True)
-        self.winch = wpilib.Talon(4)
-
-        self.stick = wpilib.Joystick(self.joystickChannel)
+        self.winch = Winch(self)
+        self.oi = oi.OI(self)
 
     def operatorControl(self):
         '''Runs the motors with Mecanum drive.'''
@@ -37,16 +35,12 @@ class TestProgram(wpilib.SampleRobot):
         self.robotDrive.setSafetyEnabled(True)
         while self.isOperatorControl() and self.isEnabled():
 
-            self.robotDrive.mecanumDrive_Cartesian(self.stick.getX(),
-                                                  self.stick.getY(),
-                                                  self.stick.getZ(), 0);
-            if self.stick.getRawButton(0):
-                self.winch.set(1)
-            elif self.stick.getRawButton(1):
-                self.winch.set(-1)
-            else:
-                self.winch.set(0)
-            
+            Scheduler.getInstance().run()
+
+            self.robotDrive.mecanumDrive_Cartesian(self.oi.stick.getX(),
+                                                   self.oi.stick.getY(),
+                                                   self.oi.stick.getZ(), 0);
+
             wpilib.Timer.delay(0.005) # wait 5ms to avoid hogging CPU cycles
 
 def main():
